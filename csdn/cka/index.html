@@ -1,0 +1,208 @@
+<!doctype html><html lang=zh-zh><head><meta charset=utf-8><title>cka 2020.12</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta name=description content="cka 2020.12"><meta name=author content="shenhonglei"><meta name=generator content="Hugo 0.74.3"><link rel=stylesheet href=https://shenhonglei.com/plugins/bootstrap/bootstrap.min.css><link rel=stylesheet href=https://shenhonglei.com/plugins/Ionicons/css/ionicons.min.css><link rel=stylesheet href=https://shenhonglei.com/plugins/magnific-popup/magnific-popup.css><link rel=stylesheet href=https://shenhonglei.com/plugins/slick/slick.css><link rel=stylesheet href=https://shenhonglei.com/scss/style.min.css media=screen><link rel="shortcut icon" href=https://shenhonglei.com/images/favicon.png type=image/x-icon><link rel=icon href=https://shenhonglei.com/images/favicon.png type=image/x-icon></head><body><div class=preloader></div><header class=navigation><div class=container><div class=row><div class=col-md-12><nav class=navbar><div class=navbar-header><button type=button class="navbar-toggle collapsed" data-toggle=collapse data-target=#navigation>
+<span class=icon-bar></span><span class=icon-bar></span><span class=icon-bar></span></button>
+<a class=navbar-brand href=/><img src=https://shenhonglei.com/images/logo.png alt="Honglei | Honglei's Blog" width=150px class=img-responsive></a></div><div class="collapse navbar-collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li><a href=/>首页</a></li><li><a href=/blog>博客</a></li><li><a href=/csdn>CSDN</a></li><li><a href=/about>关于</a></li></ul></div></nav></div></div></div></header><section class="page-title bg-2" style=background-image:url(https://shenhonglei.com/images/featue-bg.jpg)><div class=container><div class=row><div class=col-md-12><div class=block><h1>cka 2020.12</h1><p>cka 2020.12</p></div></div></div></div></section><section class=page-wrapper><div class=container><div class=row><div class=col-md-8><div class="post post-single"><h2 class=post-title>cka 2020.12</h2><div class=post-meta><ul><li><i class=ion-calendar></i>December 17, 2020</li><li><i class=ion-android-people></i>作者
+<a class=text-primary href=/author/shenhonglei>shenhonglei</a></li><li><i class=ion-pricetags></i><a href=/tags/gitalk>Gitalk</a></li></ul></div><div class=post-thumb><img class=img-responsive src=/images/csdn/csdn-gitalk.png alt="cka 2020.12"></div><div class="post-content post-excerpt"><h1 id=cka-202012>cka 2020.12</h1><hr><p>1
+Create a new ClusterRole named deployment-clusterrole,which only allows to create the following resource types:</p><ul><li>Deployment</li><li>StatefulSet</li><li>DeamonSet
+Create a new ServiceAccount named cicd-token in the existing namespace app-team1.
+Bind the new ClusterRole deployment-clusterrole to the new ServiceAccount cicd-token, limit to the namespace app-team1</li></ul><p>Answer:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create clusterrole deployment-clusterrole --verb<span style=color:#f92672>=</span>create --resource<span style=color:#f92672>=</span>deployments,statefulsets,daemonsets 
+
+kubectl create serviceaccount cicd-token --namespace<span style=color:#f92672>=</span>app-team1 
+
+kubectl create rolebinding deployment-clusterrole --clusterrole<span style=color:#f92672>=</span>deployment-clusterrole --serviceaccount<span style=color:#f92672>=</span>default:cicd-token --namespace<span style=color:#f92672>=</span>app-team1
+</code></pre></div><hr><p>2
+Set the node labelled with name=ek8s-node-1 as unavailable and reschedule all the pods running on it.</p><p>Answer:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl cordon ek8s-node-1
+kubectl drain ek8s-node-1 --delete-local-data --ignore-daemonsets --force
+</code></pre></div><hr><p>3
+Given an existing Kubernetes cluster running version 1.18.8, upgrade all of the Kubernetes control plan and node components on the master node only to version 1.19.0.
+You are also expected to upgrade kubelet and kubectl on the master node.</p><p>Answer:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl cordon k8s-master
+kubectl drain k8s-master --delete-local-data --ignore-daemonsets --force
+apt-get install kubeadm<span style=color:#f92672>=</span>1.19.0-00 kubelet<span style=color:#f92672>=</span>1.19.0-00 kubectl<span style=color:#f92672>=</span>1.19.0-00 --disableexcludes<span style=color:#f92672>=</span>kubernetes
+kubeadm upgrade apply 1.19.0 --etcd-upgrade<span style=color:#f92672>=</span>false
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl uncordon k8s-master
+</code></pre></div><hr><p>4
+Create a snapshot of the existing etcd instance running at https://127.0.0.1:2379 saving the snapshot to /srv/data/etcd-snapshot.db</p><p>Next, restore an existing, previous snameshot located at /var/lib/backup/etcd-snapshot-previous.db.</p><p>The following TLS certificates/key are supplied for connecting to the server with etcdctl:</p><p>CA certificate: /opt/KUIN00601/ca.crt
+Client certificate: /opt/KUIN00601/etcd-client.crt
+Clientkey:/opt/KUIN00601/etcd-client.key</p><p>Answer:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#backup</span>
+ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> etcdctl --endpoints<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;https://127.0.0.1:2379&#34;</span> --cacert<span style=color:#f92672>=</span>/opt/KUIN000601/ca.crt --cert<span style=color:#f92672>=</span>/opt/KUIN000601/etcd-client.crt --key<span style=color:#f92672>=</span>/opt/KUIN000601/etcd-client.key snapshot save /etc/data/etcd-snapshot.db
+
+<span style=color:#75715e>#restore</span>
+ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> etcdctl --endpoints<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;https://127.0.0.1:2379&#34;</span> --cacert<span style=color:#f92672>=</span>/opt/KUIN000601/ca.crt --cert<span style=color:#f92672>=</span>/opt/KUIN000601/etcd-client.crt --key<span style=color:#f92672>=</span>/opt/KUIN000601/etcd-client.key snapshot restore /var/lib/backup/etcd-snapshot-previoys.db
+</code></pre></div><hr><p>5
+Create a new NetworkPolicy name allow-port-from-namespace that allows Pods in the existing namespace internal to connect to port 9000 of other Pods in the same namespace,
+Ensure that the new NetworkPolicy:</p><ul><li>does not allow access to Pods not listening on port 9000</li><li>does not allow access from Pods not in namespace internal</li></ul><p>Answer:</p><pre><code>apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: all-port-from-namespace
+  namespace: internal
+spec:
+  podSelector:
+    matchLabels: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: namespacecorp-net
+    - podSelector: {}
+    ports:
+    - port: 9000
+</code></pre><hr><p>6
+Reconfigure the existing deployment front-end and add a port specification named http exposing port 80/tcp of the existing container nginx</p><p>Create a new service named front-end-svc exposing the container port http.</p><p>Configure the new service to also expose the individual Pods via a NodePort on the nodes on which they are scheduled</p><p>Answer:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl expose deployment front-end --name<span style=color:#f92672>=</span>front-end-svc --port<span style=color:#f92672>=</span><span style=color:#ae81ff>80</span> --targetport<span style=color:#f92672>=</span><span style=color:#ae81ff>80</span> --type<span style=color:#f92672>=</span>NodePort
+</code></pre></div><hr><p>7
+Create a new nginx Ingress resource as follows:</p><ul><li>Name: pong</li><li>Namespace: ing-internal</li><li>Exposing service hi on path /hi using service port 5678
+The availability of service hi can be checked using the following command, which should return hi:</li></ul><p>Answer:
+curl -kL &lt;INTERNAL_IP>/hi</p><pre><code>apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ping
+  namespace: ing-internal
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /hello
+        pathType: Prefix
+        backend:
+          service:
+            name: hello
+            port:
+              number: 5678
+</code></pre><hr><p>8
+Scale the deployment loadbalancer to 6 pods.</p><p>Answer:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl scale deploy loadbalancer --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>6</span>
+</code></pre></div><hr><p>9
+Schedule a pod as follow:</p><ul><li>Name: nginx-kusc00401</li><li>Image: nginx</li><li>Node selector: disk=spinning</li></ul><p>Answer:
+kubectl run nginx &ndash;image=nginx &ndash;dry-run=client -oyaml
+edit</p><pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-kusc00401
+  labels:
+    role: nginx-kusc00401
+spec:
+  nodeSelector:
+    disk: spinning
+  containers:
+    - name: nginx
+      image: nginx
+
+</code></pre><hr><p>10
+Check to see how many nodes are ready (not including nodes tainted NoSchedule) and write the number to /opt/nodenum</p><p>Answer:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl get node | grep -i ready
+kubectl describe nodes &lt;nodeName&gt; | grep -i taints | grep -i noSchedule
+相减，写入/opt/nodenum
+</code></pre></div><hr><p>11
+Create a pod named kucc1 with a single container for each of the following images running inside (there may be between 1 and 4 images specified): nginx + redis + memcached + consul</p><p>Answer:
+kubectl run kucc1 &ndash;image=nginx &ndash;dry-run=client -oyaml
+edit
+kubectl apply</p><pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: kucc1
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  - image: redis
+    name: redis
+  - image: memchached
+    name: memcached
+  - image: consul
+    name: consul
+</code></pre><hr><p>12
+Creae a persistent volume with name app-config of capacity 1Gi and access mode ReadWriteOnce. The type of volume is hostPath and its location is /srv/app-config</p><p>Answer:
+refer to: <a href=https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#create-a-persistentvolume>https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#create-a-persistentvolume</a></p><pre><code>apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: app-config
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: &quot;/srv/app-config&quot;
+</code></pre><hr><p>13
+Create a new PVC:</p><ul><li>Name: pv-volume</li><li>Class: csi-hostpath-sc</li><li>Capacity: 10Mi
+Create a new Pod which mounts the PVC as a volume:</li><li>Name: web-server</li><li>Image: nginx</li><li>Mount path: /usr/share/nginx/html
+Configure the new Pod to have ReadWriteOnce access on the volume.
+Finally, using kubectl edit or kubectl path expand the PVC to a capacity 70Mi and record that change.</li></ul><p>Answer:</p><pre><code>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pv-volume
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Mi
+  storageClassName: csi-hostpath-sc
+</code></pre><p>#创建pod</p><pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: web-server
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      volumeMounts:
+      - mountPath: &quot;/usr/share/nginx/html&quot;
+        name: pv-volume
+  volumes:
+    - name: pv-volume
+      persistentVolumeClaim:
+        claimName: pv-volume
+</code></pre><p>kubectl edit pvc pv-volume &ndash;save-config</p><hr><p>14
+Monitor the logs of pod foobar and:</p><ul><li>Extract log lines corrsponding to error unable-to-access-website</li><li>Write them to /opt/KUTR00101/foobar</li></ul><p>Answer:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl logs foobar |grep unable-to-access-website &gt; /opt/KUTR00101/foobar
+cat /opt/KUTR00101/foobar
+</code></pre></div><hr><p>15
+Without changing its existing containers, an existing Pod needs to be integrated into Kubernetes&rsquo;s built-in logging architecture(e.g. kubectl logs). Adding a streaming sidecar container is a good and common way to accomplish this requirement.</p><p>Add a busybox sidecar container to the existing Pod legacy-app. The new sidecar container has to run the following command:
+/bin/sh -c tail -n+1 -f /var/log/legac-appp.log</p><p>Use a volume mount named logs to make the file /var/log/legacy-app.log available to the sidecar container.</p><ul><li>Don&rsquo;t modify the existing container.</li><li>Don&rsquo;t modify the path of the log file, both containers must access it at /var/log/legacy-app.log.</li></ul><p>Answer:
+kubectl get pod xxx -oyaml</p><pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: podname
+spec:
+  containers:
+  - name: count
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - &gt;
+      i=0;
+      while true;
+      do
+        echo &quot;$(date) INFO $i&quot; &gt;&gt; /var/log/legacy-ap.log;
+        i=$((i+1));
+        sleep 1;
+      done
+    volumeMounts:
+    - name: logs
+      mountPath: /var/log
+  - name: count-log-1
+    image: busybox
+    args: [/bin/sh, -c, 'tail -n+1 -f /var/log/legacy-ap.log']
+    volumeMounts:
+    - name: logs
+      mountPath: /var/log
+  volumes:
+  - name: logs
+    emptyDir: {}
+</code></pre><p>#验证：
+kubectl logs &lt;pod_name> -c &lt;container_name></p><hr><p>16
+From the pod label name=cpu-user,find pods running high CPU workloads and write the name of the pod consuming most CPU to the fule /opt/KUT00401/KUT00401.txt (which already exists).</p><p>Answer:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl top -l name<span style=color:#f92672>=</span>cpu-user -A
+echo <span style=color:#e6db74>&#39;pod name&#39;</span> &gt;&gt; /opt/KUT00401/KUT00401.txt
+</code></pre></div><hr><p>17
+A Kubernetes worker node, named wk8s-node-0 is in state NotReady.
+Investigate why this is the case, and perform any appropriate steps to bring the node to a Ready state, ensuring that any changes are made permanent.</p><p>Answer:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo -i
+systemctl status kubelet
+systemctl start kubelet
+systemctl enable kubelet
+</code></pre></div></div><div class=post-comments><div id=gitalk-container></div><link rel=stylesheet href=https://unpkg.com/gitalk/dist/gitalk.css><script src=https://unpkg.com/gitalk/dist/gitalk.min.js></script><script>const gitalk=new Gitalk({clientID:'e888637db32e8bd4431b',clientSecret:'1118f7d74f6dff42af59655e7cd32da20d3621e5',repo:'shenhonglei.github.io',owner:'shenhonglei',admin:['shenhonglei'],id:location.pathname,distractionFreeMode:false});(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('gitalk-container').innerHTML='Gitalk comments not available by default when the website is previewed locally.';return;}
+gitalk.render('gitalk-container');})();</script></div></div></div><div class=col-md-4><aside class=sidebar><div class="widget widget-latest-post"><h4 class=widget-title>最新内容</h4><div class=media><a class=pull-left href=https://shenhonglei.com/csdn/cka/><img class=media-object src=/images/csdn/csdn-gitalk.png alt="cka 2020.12"></a><div class=media-body><h4 class=media-heading><a href=https://shenhonglei.com/csdn/cka/>cka 2020.12</a></h4><p>cka 2020.12 1 Create a new ClusterRole named …</p></div></div><div class=media><a class=pull-left href=https://shenhonglei.com/csdn/kubernetes-metrics-server/><img class=media-object src=/images/csdn/csdn-kubernetes-metrics-server.png alt="k8s 上部署 Metrics Server"></a><div class=media-body><h4 class=media-heading><a href=https://shenhonglei.com/csdn/kubernetes-metrics-server/>k8s 上部署 Metrics Server</a></h4><p>环境 Mac 系统里 docker-desktop上运行的 Kubernetes v1.19.3 上 …</p></div></div><div class=media><a class=pull-left href=https://shenhonglei.com/csdn/selinux/><img class=media-object src=/images/csdn/csdn-selinux.png alt=SELinux|Disabled、Permissive、Enforcing></a><div class=media-body><h4 class=media-heading><a href=https://shenhonglei.com/csdn/selinux/>SELinux|Disabled、Permissive、Enforcing</a></h4><p>SELinux是什么 SELinux，Security Enhanced Linux 的缩写，也就是 …</p></div></div><div class=media><a class=pull-left href=https://shenhonglei.com/csdn/gitalk/><img class=media-object src=/images/csdn/csdn-gitalk.png alt=Hugo+gitalk为blog增彩></a><div class=media-body><h4 class=media-heading><a href=https://shenhonglei.com/csdn/gitalk/>Hugo+gitalk为blog增彩</a></h4><p>GiTalk gitalk 官方demo环境 gitalk github地址
+Gitalk 是一个基 …</p></div></div></div><div class="widget widget-category"><h4 class=widget-title>目录</h4><ul class=widget-category-list><li><a href=/categories/artificial-intelligence>Artificial intelligence</a></li><li><a href=/categories/company-news>Company news</a></li><li><a href=/categories/kubernetes>Kubernetes</a></li><li><a href=/categories/legacy-support>Legacy support</a></li><li><a href=/categories/linux>Linux</a></li><li><a href=/categories/tools>Tools</a></li></ul></div><div class="widget widget-tag"><h4 class=widget-title>标签</h4><ul class=widget-tag-list><li><a href=/tags/advice>Advice</a></li><li><a href=/tags/ai>Ai</a></li><li><a href=/tags/android>Android</a></li><li><a href=/tags/company>Company</a></li><li><a href=/tags/gitalk>Gitalk</a></li><li><a href=/tags/k8s>K8s</a></li><li><a href=/tags/mechine>Mechine</a></li><li><a href=/tags/news>News</a></li><li><a href=/tags/retro>Retro</a></li><li><a href=/tags/selinux>Selinux</a></li><li><a href=/tags/technology>Technology</a></li><li><a href=/tags/%e7%9b%91%e6%8e%a7>监控</a></li></ul></div></aside></div></div></div></section><footer class=footer><div class=container><div class=row><div class=col-md-12><div class=footer-manu><ul></ul></div><p class=copyright>Copyright © 2020 <a href=https://shenhonglei.com>申红磊</a> All Rights Reserved</p></div></div></div></footer><script src=https://shenhonglei.com/plugins/jQuery/jquery.min.js></script><script src=https://shenhonglei.com/plugins/bootstrap/bootstrap.min.js></script><script src=https://shenhonglei.com/plugins/slick/slick.min.js></script><script src=https://shenhonglei.com/plugins/magnific-popup/jquery.magnific-popup.min.js></script><script src=https://shenhonglei.com/plugins/shuffle/shuffle.min.js></script><script src=https://shenhonglei.com/plugins/google-map/gmap.js></script><script src=https://shenhonglei.com/js/script.min.js></script><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-181030130-1','auto');ga('send','pageview');</script></body></html>
