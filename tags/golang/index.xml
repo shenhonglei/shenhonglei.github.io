@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>golang on Honglei | Honglei's Blog</title><link>https://shenhonglei.com/tags/golang/</link><description>Recent content in golang on Honglei | Honglei's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-zh</language><copyright>Copyright &amp;copy; 2020 [申红磊](https://shenhonglei.com) All Rights Reserved</copyright><lastBuildDate>Sun, 20 Dec 2020 09:01:50 +0000</lastBuildDate><atom:link href="https://shenhonglei.com/tags/golang/index.xml" rel="self" type="application/rss+xml"/><item><title>golang</title><link>https://shenhonglei.com/csdn/golang/</link><pubDate>Sun, 20 Dec 2020 09:01:50 +0000</pubDate><guid>https://shenhonglei.com/csdn/golang/</guid><description>golang 语言基础 当前写go一些主流的微服务框架有哪些呢？
+go-micro go-zero go-kit
+C语言 37个关键字
+C++ 11个关键字
+Golang 25个关键字
+Go 语言官方文档 https://golang.org/doc/fag
+&amp;laquo;GO 语言入门到实战&amp;raquo; 学习路线图
+1. 基础篇 2.进阶实战篇 基本程序结构 并发编程模式 常用集合 常见并发任务 函数式编程 反射和Unsafe 面向对象编程 常见架构模式的实现 错误处理 性能调优 模块化及依赖管理 高可用性服务设计 1.</description></item></channel></rss>
