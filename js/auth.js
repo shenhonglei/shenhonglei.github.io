@@ -17,24 +17,13 @@
     return window.location.pathname.indexOf(LOGIN_PATH) !== -1;
   }
 
-  function getLang() {
-    var path = window.location.pathname;
-    if (path.indexOf('/zh/') !== -1) return 'zh';
-    if (path.indexOf('/en/') !== -1) return 'en';
-    var htmlLang = document.documentElement.lang || '';
-    if (htmlLang.indexOf('zh') === 0) return 'zh';
-    return 'en';
-  }
-
   function redirectToLogin() {
-    var lang = getLang();
     var returnTo = encodeURIComponent(window.location.pathname);
-    window.location.href = '/' + lang + LOGIN_PATH + '?return=' + returnTo;
+    window.location.href = LOGIN_PATH + '?return=' + returnTo;
   }
 
   function renderUserUI() {
     var containers = document.querySelectorAll('[data-auth-ui]');
-    var lang = getLang();
 
     containers.forEach(function (el) {
       if (currentUser) {
@@ -43,25 +32,15 @@
           '<span class="auth-user-email">' +
           email +
           '</span>' +
-          '<a href="#" class="auth-logout-btn" onclick="authLogout();return false">' +
-          (lang === 'zh' ? '退出' : 'Logout') +
-          '</a>';
+          '<a href="#" class="auth-logout-btn" onclick="authLogout();return false">退出</a>';
       } else {
-        var loginLabel = lang === 'zh' ? '登录' : 'Login';
-        var registerLabel = lang === 'zh' ? '注册' : 'Register';
         el.innerHTML =
-          '<a href="/' +
-          lang +
+          '<a href="' +
           LOGIN_PATH +
-          '" class="auth-login-btn" style="margin-right:10px">' +
-          loginLabel +
-          '</a>' +
-          '<a href="/' +
-          lang +
+          '" class="auth-login-btn" style="margin-right:10px">登录</a>' +
+          '<a href="' +
           LOGIN_PATH +
-          '?mode=register" class="auth-register-btn">' +
-          registerLabel +
-          '</a>';
+          '?mode=register" class="auth-register-btn">注册</a>';
       }
     });
   }
@@ -73,7 +52,7 @@
       if (isLoginPage()) {
         var params = new URLSearchParams(window.location.search);
         var returnTo = params.get('return');
-        window.location.href = returnTo || '/' + getLang() + '/';
+        window.location.href = returnTo || '/';
         return;
       }
     } else if (event === 'SIGNED_OUT') {
