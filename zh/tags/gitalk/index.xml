@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Gitalk on Honglei | Honglei's Blog</title><link>https://shenhonglei.com/zh/tags/gitalk/</link><description>Recent content in Gitalk on Honglei | Honglei's Blog</description><generator>Hugo</generator><language>zh-zh</language><copyright>Copyright &amp;copy; 2020-2025 [申红磊](https://shenhonglei.com) All Rights Reserved</copyright><lastBuildDate>Fri, 11 Dec 2020 18:01:50 +0000</lastBuildDate><atom:link href="https://shenhonglei.com/zh/tags/gitalk/index.xml" rel="self" type="application/rss+xml"/><item><title>Hugo+gitalk为blog增彩</title><link>https://shenhonglei.com/zh/csdn/gitalk/</link><pubDate>Fri, 11 Dec 2020 18:01:50 +0000</pubDate><guid>https://shenhonglei.com/zh/csdn/gitalk/</guid><description>&lt;h2 id="gitalk"&gt;GiTalk&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://gitalk.github.io"&gt;gitalk 官方demo环境&lt;/a&gt; &lt;a href="https://github.com/gitalk/gitalk"&gt;gitalk github地址&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Gitalk 是一个基于 GitHub Issue 和 Preact 开发的评论插件&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Gitalk is a modern comment component based on GitHub Issue and Preact&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;特性：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 GitHub 登录&lt;/li&gt;
+&lt;li&gt;支持多语言 [en, zh-CN, zh-TW, es-ES, fr, ru, de, pl, ko]&lt;/li&gt;
+&lt;li&gt;支持个人或组织&lt;/li&gt;
+&lt;li&gt;无干扰模式（设置 distractionFreeMode 为 true 开启）&lt;/li&gt;
+&lt;li&gt;快捷键提交评论 （cmd|ctrl + enter）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#评论是调用github的api来完成的，不依赖第三方&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;https://api.github.com/repos/yourrepo/issues?
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="创建-github-application"&gt;创建 Github Application&lt;/h2&gt;
+&lt;p&gt;如果没有application，就先创建 &lt;a href="https://github.com/settings/applications/new"&gt;Github Application&lt;/a&gt;，这里是&lt;a href="https://docs.github.com/cn/free-pro-team@latest/developers/apps/creating-an-oauth-app"&gt;官方中文帮助文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Client ID，Client secrets在后面config.toml中配置时，需要使用。&lt;/p&gt;
+&lt;h2 id="方式一直接引用hugo的主题"&gt;方式一,直接引用Hugo的主题&lt;/h2&gt;
+&lt;p&gt;如果您是直接下载使用的主题，只需要四大步骤&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;1.为主题添加 &lt;code&gt;gitalk.html&lt;/code&gt; 模板&lt;/p&gt;
+&lt;p&gt;路径地址 |airspace-hugo/layouts/partials/gitalk.html&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-html" data-lang="html"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{{ if .Site.Params.enableGitalk }}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;lt;&lt;span style="color:#f92672"&gt;div&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;gitalk-container&amp;#34;&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style="color:#f92672"&gt;div&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;lt;&lt;span style="color:#f92672"&gt;link&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;rel&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;stylesheet&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;href&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;https://unpkg.com/gitalk/dist/gitalk.css&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;lt;&lt;span style="color:#f92672"&gt;script&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;src&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;https://unpkg.com/gitalk/dist/gitalk.min.js&amp;#34;&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style="color:#f92672"&gt;script&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;lt;&lt;span style="color:#f92672"&gt;script&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;gitalk&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Gitalk&lt;/span&gt;({
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;clientID&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;{{ .Site.Params.Gitalk.clientID }}&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;clientSecret&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;{{ .Site.Params.Gitalk.clientSecret }}&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;repo&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;{{ .Site.Params.Gitalk.repo }}&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;owner&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;{{ .Site.Params.Gitalk.owner }}&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;admin&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; [&lt;span style="color:#e6db74"&gt;&amp;#39;{{ .Site.Params.Gitalk.owner }}&amp;#39;&lt;/span&gt;],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;location&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;pathname&lt;/span&gt;, &lt;span style="color:#75715e"&gt;// Ensure uniqueness and length less than 50
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;distractionFreeMode&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt; &lt;span style="color:#75715e"&gt;// Facebook-like distraction free mode
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; (&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ([&lt;span style="color:#e6db74"&gt;&amp;#34;localhost&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;127.0.0.1&amp;#34;&lt;/span&gt;].&lt;span style="color:#a6e22e"&gt;indexOf&lt;/span&gt;(window.&lt;span style="color:#a6e22e"&gt;location&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;hostname&lt;/span&gt;) &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; document.&lt;span style="color:#a6e22e"&gt;getElementById&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;gitalk-container&amp;#39;&lt;/span&gt;).&lt;span style="color:#a6e22e"&gt;innerHTML&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;Gitalk comments not available by default when the website is previewed locally.&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;gitalk&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;render&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;gitalk-container&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; })();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;lt;/&lt;span style="color:#f92672"&gt;script&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{{ end }}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start="2"&gt;
+&lt;li&gt;在 &lt;code&gt;single.html&lt;/code&gt; 插入 &lt;code&gt;{{ partial &amp;quot;gitalk.html&amp;quot; . }}&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;路径地址 |airspace-hugo/layouts/_default/single.html&lt;/p&gt;</description></item></channel></rss>

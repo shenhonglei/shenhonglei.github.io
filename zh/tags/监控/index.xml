@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>监控 on Honglei | Honglei's Blog</title><link>https://shenhonglei.com/zh/tags/%E7%9B%91%E6%8E%A7/</link><description>Recent content in 监控 on Honglei | Honglei's Blog</description><generator>Hugo</generator><language>zh-zh</language><copyright>Copyright &amp;copy; 2020-2025 [申红磊](https://shenhonglei.com) All Rights Reserved</copyright><lastBuildDate>Tue, 15 Dec 2020 13:01:50 +0000</lastBuildDate><atom:link href="https://shenhonglei.com/zh/tags/%E7%9B%91%E6%8E%A7/index.xml" rel="self" type="application/rss+xml"/><item><title>k8s 上部署 Metrics Server</title><link>https://shenhonglei.com/zh/csdn/kubernetes-metrics-server/</link><pubDate>Tue, 15 Dec 2020 13:01:50 +0000</pubDate><guid>https://shenhonglei.com/zh/csdn/kubernetes-metrics-server/</guid><description>&lt;h1 id="环境"&gt;环境&lt;/h1&gt;
+&lt;p&gt;Mac 系统里 docker-desktop上运行的 Kubernetes v1.19.3 上启动Metrics Server&lt;/p&gt;
+&lt;h1 id="场景"&gt;场景&lt;/h1&gt;
+&lt;p&gt;资源使用指标，例如容器 CPU 和内存使用率，可通过 Metrics API 在 Kubernetes 中获得。 这些指标可以直接被用户访问，比如使用 kubectl top 命令行，或者被集群中的控制器 （例如 Horizontal Pod Autoscalers) 使用来做决策。&lt;/p&gt;
+&lt;h1 id="metrics-api"&gt;Metrics API&lt;/h1&gt;
+&lt;p&gt;通过 Metrics API，你可以获得指定节点或 Pod 当前使用的资源量。 此 API 不存储指标值，因此想要获取某个指定节点 10 分钟前的 资源使用量是不可能的。&lt;/p&gt;
+&lt;p&gt;此 API 与其他 API 没有区别：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;此 API 和其它 Kubernetes API 一起位于同一端点（endpoint）之下且可发现， 路径为 /apis/metrics.k8s.io/&lt;/li&gt;
+&lt;li&gt;它具有相同的安全性、可扩展性和可靠性保证
+Metrics API 在 k8s.io/metrics 仓库中定义。你可以在那里找到有关 Metrics API 的更多信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;说明： Metrics API 需要在集群中部署 Metrics Server。否则它将不可用。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id="metrics-api-not-available"&gt;Metrics API not available&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#查看node的资源使用情况&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;➜ ~ kubectl top node
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;error: Metrics API not available &lt;span style="color:#75715e"&gt;#没有部署Metrics时会报错&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#查看&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;➜ ~ kubectl cluster-info
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Kubernetes master is running at https://kubernetes.docker.internal:6443
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;KubeDNS is running at https://kubernetes.docker.internal:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id="k8s-上部署-metrics-server"&gt;k8s 上部署 Metrics Server&lt;/h1&gt;
+&lt;h2 id="下载镜像和componentsyaml"&gt;下载镜像和components.yaml&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#需要解决科学上网才能下载镜像k8s.gcr.io/metrics-server/metrics-server:v0.4.1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#从csdn下载K8s metrics-server.zip&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#解压K8s metrics-server.zip&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;docker load -i k8s-gcr-io-metrics-server-metrics-server-v0.4.1.rar 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="查看确认镜像"&gt;查看确认镜像&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;➜ metrics-server git:&lt;span style="color:#f92672"&gt;(&lt;/span&gt;91dbeeb&lt;span style="color:#f92672"&gt;)&lt;/span&gt; docker images | grep metrics-server
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;k8s.gcr.io/metrics-server/metrics-server v0.4.1 9759a41ccdf0 &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt; weeks ago 60.5MB
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;➜ metrics-server git:&lt;span style="color:#f92672"&gt;(&lt;/span&gt;91dbeeb&lt;span style="color:#f92672"&gt;)&lt;/span&gt; cd /
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="k8s启动metrics-server"&gt;k8s启动metrics-server&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#本地执行，根据自己的components.yaml目录来执行&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kubectl apply -f components.yaml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="运行记录"&gt;运行记录&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;➜ metrics-server git:&lt;span style="color:#f92672"&gt;(&lt;/span&gt;91dbeeb&lt;span style="color:#f92672"&gt;)&lt;/span&gt; kubectl apply -f components.yaml
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;serviceaccount/metrics-server created
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;clusterrole.rbac.authorization.k8s.io/system:metrics-server created
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader created
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;clusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator created
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;clusterrolebinding.rbac.authorization.k8s.io/system:metrics-server created
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;service/metrics-server created
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;deployment.apps/metrics-server created
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="验证metrics-server"&gt;验证metrics-server&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;➜ Desktop kubectl top nodes
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NAME CPU&lt;span style="color:#f92672"&gt;(&lt;/span&gt;cores&lt;span style="color:#f92672"&gt;)&lt;/span&gt; CPU% MEMORY&lt;span style="color:#f92672"&gt;(&lt;/span&gt;bytes&lt;span style="color:#f92672"&gt;)&lt;/span&gt; MEMORY%
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;docker-desktop 308m 7% 1794Mi 37%
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id="注意事项-x509-cannot-validate-certificate"&gt;注意事项 x509: cannot validate certificate&lt;/h1&gt;
+&lt;p&gt;默认从官方拉取的文件&lt;/p&gt;</description></item></channel></rss>
